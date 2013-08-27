@@ -4,10 +4,10 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.geekhua</groupId>
-	<artifactId>memcached-proxy</artifactId>
+	<artifactId>memcached-stub</artifactId>
 	<version>0.0.1</version>
-	<name>MemcachedProxy</name>
-	<url>https://github.com/leoliang/MemcachedProxy</url>
+	<name>MemcachedStub</name>
+	<url>https://github.com/leoliang/MemcachedStub</url>
 	<packaging>jar</packaging>
 	<developers>
 		<developer>
