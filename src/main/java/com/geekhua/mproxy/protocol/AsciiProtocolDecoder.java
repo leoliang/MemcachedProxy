@@ -64,7 +64,6 @@ public class AsciiProtocolDecoder extends FrameDecoder {
             if (!command.extractData(buffer)) {
                 return null;
             } else {
-                System.out.println(command);
                 return command;
             }
         } else {
