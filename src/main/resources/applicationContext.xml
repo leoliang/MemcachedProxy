@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<bean id="proxyServer" class="com.geekhua.mproxy.server.DefaultMProxyServer"
+		destroy-method="stop">
+		<constructor-arg ref="channelFactory" />
+		<constructor-arg ref="allChannels" />
+		<constructor-arg ref="serverBootstrap" />
+		<constructor-arg ref="addr"></constructor-arg>
+	</bean>
+
+	<bean id="addr" class="java.net.InetSocketAddress">
+		<constructor-arg value="11211" />
+	</bean>
+
+	<bean id="channelFactory"
+		class="org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory">
+		<constructor-arg>
+			<bean class="java.util.concurrent.Executors" factory-method="newCachedThreadPool" />
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="java.util.concurrent.Executors" factory-method="newCachedThreadPool" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="allChannels" class="org.jboss.netty.channel.group.DefaultChannelGroup">
+		<constructor-arg value="mproxyChannelGroup" />
+	</bean>
+
+	<bean id="serverBootstrap" class="org.jboss.netty.bootstrap.ServerBootstrap">
+		<constructor-arg ref="channelFactory" />
+		<property name="pipelineFactory">
+			<bean class="com.geekhua.mproxy.server.DefaultMproxyPipelineFactory">
+				<constructor-arg ref="memcachedAsciiProtocolDecoder" />
+				<constructor-arg ref="executor" />
+			</bean>
+		</property>
+		<property name="options">
+			<map>
+				<entry key="sendBufferSize" value="65536" />
+				<entry key="receiveBufferSize" value="65536" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="executor" class="java.util.concurrent.ThreadPoolExecutor">
+		<constructor-arg value="10" />
+		<constructor-arg value="15" />
+		<constructor-arg value="30" />
+		<constructor-arg>
+			<util:constant static-field="java.util.concurrent.TimeUnit.SECONDS" />
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="java.util.concurrent.LinkedBlockingQueue">
+				<constructor-arg value="200" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	<bean id="memcachedAsciiProtocolDecoder" class="com.geekhua.mproxy.protocol.AsciiProtocolDecoder" />
+
+</beans>
